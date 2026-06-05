@@ -8,3 +8,6 @@ Sanitizes inputs, manages secrets via Azure Key Vault, enforces rate limits, and
 
 ## Architecture
 See [SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md)
+
+## Chanel Logs
+See [Channel_Log.md](./Channel_Log.md)
