@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.routers import gateway
 
 app = FastAPI(
     title="LLM Security Gateway",
@@ -8,9 +9,10 @@ app = FastAPI(
 
 # TODO: Middleware
 
-# TODO :Routers
+# Routers
+app.include_router(gateway.router, prefix="/gateway", tags=["gateway"])
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    return {"status": "Up and Running"}
