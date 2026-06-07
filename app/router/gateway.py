@@ -1,3 +1,14 @@
+from pydantic import BaseModel
+router = APIRouter()
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+class ChatResponse(BaseModel):
+    response: str
+    provider: str
+
 
 @router.get("/HelloWorld")
 async def get(request)
