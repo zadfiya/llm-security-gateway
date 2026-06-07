@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.routers import gateway
+from app.add_middleware import RateLimitMiddleware
 
 app = FastAPI(
     title="LLM Security Gateway",
@@ -7,7 +8,8 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# TODO: Middleware
+# Middlewares
+app.add_middleware(RateLimitMiddleware)
 
 # Routers
 app.include_router(gateway.router, prefix="/gateway", tags=["gateway"])
