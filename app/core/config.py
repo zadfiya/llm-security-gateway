@@ -8,6 +8,10 @@ class Settings():
     # LLM provider selection: openai | groq | ollama
     llm_provider: str = ""
 
+    # Rate limiting
+    rate_limit_requests: int = 60   # per minute per IP
+    rate_limit_window: int = 60  
+
     use_keyvault: bool = False
 
     class Config:
