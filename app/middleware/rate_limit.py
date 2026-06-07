@@ -2,6 +2,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.core.config import get_settings
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from collections import defaultdict
+import time
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app):
@@ -24,7 +26,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 content={"Error_Code": "RATE_LIMIT_EXCEEDED",
                 "Error_Message":"Too Many Requests", 
                 "detail": "Rate limit exceeded. Try again later."}
-            ):
+            )
 
         self._requests[ip].append(now)
         return await call_next(request)

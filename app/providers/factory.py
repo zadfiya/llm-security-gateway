@@ -9,4 +9,14 @@ def get_provider() -> BaseLLMProvider:
     settings = get_settings()
     provider = settings.llm_provider.lower()
 
-    pass
+    if provider == "openai":
+        from app.providers.openai_provider import OpenAIProvider
+        return OpenAIProvider()
+    elif provider == "groq":
+        from app.providers.groq_provider import GroqProvider
+        return GroqProvider()
+    elif provider == "ollama":
+        from app.providers.ollama_provider import OllamaProvider
+        return OllamaProvider()
+    else:
+        raise ValueError(f"Unknown LLM provider: {provider}")
