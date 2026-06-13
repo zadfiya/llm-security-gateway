@@ -7,6 +7,45 @@ Think of it as a security bouncer.
 Every request goes through the gateway before reaching the model, and every response comes back through it before reaching the user.
 
 
+## Architecture
+
+```mermaid
+flowchart TD
+    A[Client / Application] -->|HTTP POST /gateway/chat| B[FastAPI Gateway]
+
+    subgraph Gateway Layer
+        B --> C[Rate Limiter Middleware]
+        C --> D[Input Guardrails\nPrompt Injection · PII · Secrets]
+        D --> E[LLM Provider Interface\nPluggable: OpenAI · Groq · Ollama]
+        E --> F[Output Guardrails\nPII Redaction · Content Filter]
+    end
+
+    E -->|Authenticated API Call| G[LLM Provider\ne.g. OpenAI / Groq]
+    G -->|Response| E
+
+    F -->|Clean Response| A
+
+    subgraph Secrets Management
+        H[Azure Key Vault]
+        E -->|Fetch API Key at runtime| H
+    end
+
+    subgraph Observability
+        B --> I[Structured Logging]
+        C --> I
+        D --> I
+    end
+
+    subgraph CI Pipeline
+        J[SonarQube SAST] -->|Pre-deploy scan| B
+    end
+
+    subgraph Deployment
+        K[Kubernetes\nDeployment + Health Probes]
+        B -->|Runs inside| K
+    end
+```
+
 ## Component Responsibilities
 
 **FastAPI** - Async HTTP server, request routing, middleware chain 
