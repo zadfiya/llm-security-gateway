@@ -1,0 +1,18 @@
+version: "0.1.0"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    image: llm-security-gateway:latest
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Uncomment for local development to mount code and avoid rebuilding every change
+    # volumes:
+    #   - ./:/app
