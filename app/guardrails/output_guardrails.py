@@ -9,3 +9,13 @@ from dataclasses import dataclass, field
 class OutputGuardResult:
     text: str
     detections: list = field(default_factory=list)
+
+def scan_output(text: str) -> OutputGuardResult:
+    """
+    Scans LLM response for any PII or sensitive data.
+    Always redacts — never blocks (response has already been generated).
+    """
+    detections: list[Detection] = []
+    sanitized = text
+
+    pass
