@@ -17,5 +17,10 @@ def scan_output(text: str) -> OutputGuardResult:
     """
     detections: list[Detection] = []
     sanitized = text
+    
+    for label, pattern in OUTPUT_PATTERNS.items():
+        if re.search(pattern):
+            sanitized = re.sub(pattern, )
+            detections.append(Detection(pattern_type=label, severity="high"))
 
-    pass
+    return OutputGuardResult(text=sanitized, detections=detections)
