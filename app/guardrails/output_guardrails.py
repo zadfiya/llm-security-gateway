@@ -19,8 +19,8 @@ def scan_output(text: str) -> OutputGuardResult:
     sanitized = text
     
     for label, pattern in OUTPUT_PATTERNS.items():
-        if re.search(pattern):
-            sanitized = re.sub(pattern, )
-            detections.append(Detection(pattern_type=label, severity="high"))
+        if re.search(pattern, sanitized, re.IGNORECASE):
+            sanitized = re.sub(pattern, f"[{label} REDACTED]", sanitized, flags=re.IGNORECASE)
+            detections.append(Detection(pattern_type=label, severity="high", redacted=True))
 
     return OutputGuardResult(text=sanitized, detections=detections)
