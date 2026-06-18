@@ -1,5 +1,6 @@
+import re
 from dataclasses import dataclass, field
-from app.guardrails.constants import _SECURE_PROMPT
+from app.guardrails.constants import _SECURE_PROMPT, CRITICAL_PATTERNS
 
 # ─── Data classes ────────────────────────────────────────────────────────────
 
