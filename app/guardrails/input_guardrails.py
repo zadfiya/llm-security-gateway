@@ -34,7 +34,11 @@ def scan_input(text: str) -> GuardResult:
     3. Neutralize prompt injection
     4. Wrap in secure LangChain prompt
     """
+    detections: list[Detection] = []
+    sanitized = text
 
+    # Step 1 — Critical PII: block
+    
     secure_text = build_secure_prompt(text)
 
     return GuardResult(text=secure_text, detections=None, blocked=False)
