@@ -38,7 +38,11 @@ def scan_input(text: str) -> GuardResult:
     sanitized = text
 
     # Step 1 — Critical PII: block
-    
+    for label, pattern in CRITICAL_PATTERNS.items():
+        if re.search(pattern, sanitized, re.IGNORECASE):
+            detections.append(Detection(pattern_type=label))
+            return GuardResult(text=sanitized, detections=detections)
+            
     secure_text = build_secure_prompt(text)
 
     return GuardResult(text=secure_text, detections=None, blocked=False)
