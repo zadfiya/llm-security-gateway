@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass, field
-from app.guardrails.constants import _SECURE_PROMPT, CRITICAL_PATTERNS
+from app.guardrails.constants import _SECURE_PROMPT, CRITICAL_PATTERNS, REDACTABLE_PATTERNS
 
 # ─── Data classes ────────────────────────────────────────────────────────────
 
@@ -42,7 +42,14 @@ def scan_input(text: str) -> GuardResult:
         if re.search(pattern, sanitized, re.IGNORECASE):
             detections.append(Detection(pattern_type=label, severity="critical", redacted=False))
             return GuardResult(text=sanitized, detections=detections, blocked=True)
-            
+        
+    # Step 2 — Redactable PII: sanitize
+    for label, pattern in REDACTABLE_PATTERNS.items():
+        if re.search(pattern, sanitized, re.IGNORECASE):
+            sanitized = re.sub(pattern, "", sanitized, flags=re.IGNORECASE)
+            detections.append(Detection(pattern_type=label, severity="high", redacted=True))
+
+
     secure_text = build_secure_prompt(text)
 
     return GuardResult(text=secure_text, detections=None, blocked=False)
