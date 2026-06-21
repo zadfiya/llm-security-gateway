@@ -43,10 +43,11 @@ def scan_input(text: str) -> GuardResult:
             detections.append(Detection(pattern_type=label, severity="critical", redacted=False))
             return GuardResult(text=sanitized, detections=detections, blocked=True)
         
+
     # Step 2 — Redactable PII: sanitize
     for label, pattern in REDACTABLE_PATTERNS.items():
         if re.search(pattern, sanitized, re.IGNORECASE):
-            sanitized = re.sub(pattern, "", sanitized, flags=re.IGNORECASE)
+            sanitized = re.sub(pattern, f"[{label} REDACTED]", sanitized, flags=re.IGNORECASE)
             detections.append(Detection(pattern_type=label, severity="high", redacted=True))
 
 
