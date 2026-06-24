@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass, field
-from app.guardrails.constants import _SECURE_PROMPT, CRITICAL_PATTERNS, REDACTABLE_PATTERNS
+from app.guardrails.constants import _SECURE_PROMPT, CRITICAL_PATTERNS, REDACTABLE_PATTERNS, INJECTION_PATTERNS
 
 # ─── Data classes ────────────────────────────────────────────────────────────
 
@@ -51,7 +51,11 @@ def scan_input(text: str) -> GuardResult:
             detections.append(Detection(pattern_type=label, severity="high", redacted=True))
 
     #todo: Step 3 — Prompt injection: neutralize (not implemented yet)
-    
+    for pattern in INJECTION_PATTERNS:
+        if re.search(pattern, sanitized):
+            sanitized = re.sub(pattern, "", sanitized)
+            detections.append(Detection(pattern_type="Prompt Injection", severity="high"))
+
     secure_text = build_secure_prompt(text)
 
     return GuardResult(text=secure_text, detections=None, blocked=False)
