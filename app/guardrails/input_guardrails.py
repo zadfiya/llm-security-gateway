@@ -50,11 +50,11 @@ def scan_input(text: str) -> GuardResult:
             sanitized = re.sub(pattern, f"[{label} REDACTED]", sanitized, flags=re.IGNORECASE)
             detections.append(Detection(pattern_type=label, severity="high", redacted=True))
 
-    #todo: Step 3 — Prompt injection: neutralize (not implemented yet)
+    #Step 3 — Prompt injection: neutralize
     for pattern in INJECTION_PATTERNS:
-        if re.search(pattern, sanitized):
-            sanitized = re.sub(pattern, "", sanitized)
-            detections.append(Detection(pattern_type="Prompt Injection", severity="high"))
+        if re.search(pattern, sanitized, re.IGNORECASE):
+            sanitized = re.sub(pattern, "[INJECTION NEUTRALIZED]", sanitized, flags=re.IGNORECASE)
+            detections.append(Detection(pattern_type="Prompt Injection", severity="high", redacted=True))
 
     secure_text = build_secure_prompt(text)
 
