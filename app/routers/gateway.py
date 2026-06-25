@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException
 from app.providers.factory import get_provider
+from app.guardrails.input_guardrails import scan_input
 
 router = APIRouter()
 
@@ -25,7 +26,10 @@ async def chat(request: ChatRequest):
     provider = get_provider()
 
     # TODO Sprint 2: input_guard.scan(request.message)
-    response_text = await provider.complete(request.message)
+    input_result = scan_input(request.message)
+
+    print (f"Guard Result: text={input_result.text} blocked={input_result.blocked}, detections={input_result.detections}")
+    response_text = await provider.complete(input_result.text)
     # TODO Sprint 2: output_guard.scan(response_text)
 
     return ChatResponse(response=response_text, provider=provider.provider_name())
