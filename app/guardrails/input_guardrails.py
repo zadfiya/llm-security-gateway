@@ -1,6 +1,5 @@
-import re
 from dataclasses import dataclass, field
-from app.guardrails.constants import _SECURE_PROMPT, CRITICAL_PATTERNS, REDACTABLE_PATTERNS, INJECTION_PATTERNS
+from app.guardrails.constants import _SECURE_PROMPT
 
 # ─── Data classes ────────────────────────────────────────────────────────────
 
@@ -34,27 +33,6 @@ def scan_input(text: str) -> GuardResult:
     3. Neutralize prompt injection
     4. Wrap in secure LangChain prompt
     """
-    detections: list[Detection] = []
-    sanitized = text
-
-    # Step 1 — Critical PII: block
-    for label, pattern in CRITICAL_PATTERNS.items():
-        if re.search(pattern, sanitized, re.IGNORECASE):
-            detections.append(Detection(pattern_type=label, severity="critical", redacted=False))
-            return GuardResult(text=sanitized, detections=detections, blocked=True)
-        
-
-    # Step 2 — Redactable PII: sanitize
-    for label, pattern in REDACTABLE_PATTERNS.items():
-        if re.search(pattern, sanitized, re.IGNORECASE):
-            sanitized = re.sub(pattern, f"[{label} REDACTED]", sanitized, flags=re.IGNORECASE)
-            detections.append(Detection(pattern_type=label, severity="high", redacted=True))
-
-    #Step 3 — Prompt injection: neutralize
-    for pattern in INJECTION_PATTERNS:
-        if re.search(pattern, sanitized, re.IGNORECASE):
-            sanitized = re.sub(pattern, "[INJECTION NEUTRALIZED]", sanitized, flags=re.IGNORECASE)
-            detections.append(Detection(pattern_type="Prompt Injection", severity="high", redacted=True))
 
     secure_text = build_secure_prompt(text)
 
