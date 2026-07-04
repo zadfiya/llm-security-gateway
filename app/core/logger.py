@@ -25,5 +25,33 @@ def log_event() -> None:
     Stores: timestamp, provider, block status, original query (capped),
     sanitized query, detections, and response snippet.
     """
-    # Implementation of the logging logic goes here
-    pass
+    
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "provider": provider,
+        "blocked": blocked,
+        "input": {
+            "original": original_input[:500],
+            "sanitized": sanitized_input[:500],
+            "detections": [
+                {
+                    "type": d.pattern_type,
+                    "severity": d.severity,
+                    "redacted": d.redacted,
+                }
+                for d in input_detections
+            ],
+        },
+        "output": {
+            "snippet": response_snippet[:300],
+            "detections": [
+                {
+                    "type": d.pattern_type,
+                    "severity": d.severity,
+                    "redacted": d.redacted,
+                }
+                for d in (output_detections or [])
+            ],
+        },
+    }
+    _logger.info(json.dumps(entry))
