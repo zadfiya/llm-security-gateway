@@ -1,5 +1,7 @@
 import logging
+import json
 from pathlib import Path
+from datetime import datetime, timezone
 
 # Ensure logs directory exists
 Path("logs").mkdir(exist_ok=True)
@@ -19,13 +21,20 @@ _stream_handler.setFormatter(logging.Formatter("%(message)s"))
 _logger.addHandler(_stream_handler)
 
 
-def log_event() -> None:
+def log_event( 
+    original_input: str,
+    sanitized_input: str,
+    input_detections: list,
+    blocked: bool,
+    provider: str,
+    response_snippet: str = "",
+    output_detections: list = None,) -> None:
     """
     Writes one structured JSON log entry per request.
     Stores: timestamp, provider, block status, original query (capped),
     sanitized query, detections, and response snippet.
     """
-    
+
     entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "provider": provider,
