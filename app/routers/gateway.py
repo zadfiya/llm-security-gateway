@@ -58,6 +58,16 @@ async def chat(request: ChatRequest):
     if output_result.detections:
         warnings.append(f"Output: {len(output_result.detections)} field(s) redacted from LLM response")
 
+    log_event(
+        original_input=request.message,
+        sanitized_input=input_result.text,
+        input_detections=input_result.detections,
+        blocked=False,
+        provider=provider.provider_name(),
+        response_snippet=output_result.text,
+        output_detections=output_result.detections,
+    )
+
     return ChatResponse(
         response=output_result.text,
         provider=provider.provider_name(),
