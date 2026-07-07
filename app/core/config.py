@@ -6,16 +6,16 @@ class Settings(BaseSettings):
     app_env: str = "development"
 
     # LLM provider selection: openai | groq | ollama
-    llm_provider: str = ""
+    llm_provider: str
 
     # API keys — loaded from env or Azure Key Vault in production
-    openai_api_key: str = ""
-    groq_api_key: str = ""
-    ollama_base_url: str = "http://localhost:11434"
+    openai_api_key: str 
+    groq_api_key: str
+    ollama_base_url: str
 
     # Rate limiting
-    rate_limit_requests: int = 60   # per minute per IP
-    rate_limit_window: int = 60  
+    rate_limit_requests: int   # per minute per IP
+    rate_limit_window: int
 
     use_keyvault: bool = False
 
