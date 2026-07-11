@@ -1,18 +1,19 @@
-version: "0.1.0"
+version: "3.8"
 
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env
     image: llm-security-gateway:latest
     restart: unless-stopped
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
-      - PYTHONUNBUFFERED=1
-    # Uncomment for local development to mount code and avoid rebuilding every change
-    # volumes:
-    #   - ./:/app
+      PYTHONUNBUFFERED: "1"
+      DEBUG: "${DEBUG:-0}"
+    # For production: don't mount the host source (use image content).
+    # For local development with auto-reload, see docker-compose.override.yml which
+    # mounts the repo and runs uvicorn with --reload.
