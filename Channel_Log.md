@@ -5,3 +5,4 @@ A chronological document used to track all modifications made throughout a proje
 | Version | Updates |
 |---|---|
 | 0.1.0 | Basic Security for API traffic |
+| 0.1.1 | Add UsageDetails for token tracking|

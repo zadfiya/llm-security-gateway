@@ -58,5 +58,5 @@ def scan_input(text: str) -> GuardResult:
 
     secure_text = build_secure_prompt(text)
 
-    return GuardResult(text=secure_text, detections=None, blocked=False)
+    return GuardResult(text=secure_text, detections=detections, blocked=False)
 

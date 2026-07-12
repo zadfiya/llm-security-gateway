@@ -24,35 +24,35 @@ _logger.addHandler(_stream_handler)
 def log_event( 
     original_input: str,
     sanitized_input: str,
-    input_detections: list,
-    blocked: bool,
     provider: str,
     response_snippet: str = "",
-    output_detections: list = None,) -> None:
+    blocked: bool = False,
+    input_detections: list = [],
+    output_detections: list = [],) -> None:
     """
     Writes one structured JSON log entry per request.
     Stores: timestamp, provider, block status, original query (capped),
     sanitized query, detections, and response snippet.
     """
-
+       
     entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "provider": provider,
         "blocked": blocked,
         "input": {
-            "original": original_input[:500],
-            "sanitized": sanitized_input[:500],
+            "original": (original_input or "")[:500],
+            "sanitized": (sanitized_input or "")[:500],
             "detections": [
                 {
                     "type": d.pattern_type,
                     "severity": d.severity,
                     "redacted": d.redacted,
                 }
-                for d in input_detections
+                for d in (input_detections or [])
             ],
         },
         "output": {
-            "snippet": response_snippet[:300],
+            "snippet": (response_snippet or "")[:300],
             "detections": [
                 {
                     "type": d.pattern_type,
