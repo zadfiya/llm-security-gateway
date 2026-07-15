@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     rate_limit_window: int
 
     use_keyvault: bool = False
+    azure_keyvault_url: str = ""    # e.g. https://myvault.vault.azure.net/
 
     model_config = SettingsConfigDict(
         env_file=".env",
