@@ -92,8 +92,8 @@ flowchart LR
 | Sprint | Feature | Status |
 |---|---|---|
 | 1 | Project setup, FastAPI scaffold, pluggable LLM interface | - [x] |
-| 2 | Input/output guardrails with LangChain | - [ ] |
-| 3 | Azure Key Vault integration | - [ ] |
+| 2 | Input/output guardrails with LangChain | - [x] |
+| 3 | Azure Key Vault integration | - [*] |
 | 4 | Kubernetes deployment + health probes | - [ ] |
 | 5 | SonarQube CI pipeline integration | - [ ] |
 
