@@ -26,6 +26,9 @@ def get_secret(secret_name: str) -> str:
         return value
 
     except Exception as e:
+        fallback = _resolve_from_env(secret_name, settings)
+        if fallback:
+            return fallback
         raise RuntimeError(f"Secret '{secret_name}' unavailable from AKV and env fallback") from e
 
 def _resolve_from_env(secret_name: str, settings) -> str:
