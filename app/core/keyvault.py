@@ -18,9 +18,15 @@ def get_secret(secret_name: str) -> str:
         from azure.identity import DefaultAzureCredential
         from azure.keyvault.secrets import SecretClient
 
+        credential = DefaultAzureCredential()
+        client = SecretClient(vault_url=settings.azure_keyvault_url, credential=credential)
+        secret = client.get_secret(secret_name)
+        value = secret.value
+
+        return value
+
     except Exception as e:
-        pass
-    
+        raise RuntimeError(f"Secret '{secret_name}' unavailable from AKV and env fallback") from e
 
 def _resolve_from_env(secret_name: str, settings) -> str:
     """Maps AKV secret names to config fields for local dev fallback."""
