@@ -1,4 +1,7 @@
+import logging
 from config import get_settings
+
+logger = logging.getLogger("security_gateway")
 
 def get_secret(secret_name: str) -> str:
     """
@@ -23,11 +26,14 @@ def get_secret(secret_name: str) -> str:
         secret = client.get_secret(secret_name)
         value = secret.value
 
+        logger.info(f"[AKV] Fetched: {secret_name}")
         return value
 
     except Exception as e:
+        logger.error(f"[AKV] Failed to fetch secret '{secret_name}': {e}")
         fallback = _resolve_from_env(secret_name, settings)
         if fallback:
+            logger.warning(f"[AKV] Using env fallback for: {secret_name}")
             return fallback
         raise RuntimeError(f"Secret '{secret_name}' unavailable from AKV and env fallback") from e
 
