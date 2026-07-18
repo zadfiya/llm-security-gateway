@@ -1,7 +1,12 @@
 import logging
+import time
 from config import get_settings
 
 logger = logging.getLogger("security_gateway")
+
+# In-memory cache: { secret_name: (value, fetched_at) }
+_cache: dict[str, tuple[str, float]] = {}
+CACHE_TTL_SECONDS = 300  # refresh before AKV rotation window
 
 def get_secret(secret_name: str) -> str:
     """
@@ -16,6 +21,13 @@ def get_secret(secret_name: str) -> str:
         # Local dev: resolve from env via config
         return _resolve_from_env(secret_name, settings)
     
+    # Check cache first
+    cached = _cache.get(secret_name)
+    if cached:
+        value, fetched_at = cached
+        if time.time() - fetched_at < CACHE_TTL_SECONDS:
+            return value
+
     # Fetch from AKV
     try:
         from azure.identity import DefaultAzureCredential
