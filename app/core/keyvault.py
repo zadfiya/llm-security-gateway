@@ -38,7 +38,8 @@ def get_secret(secret_name: str) -> str:
         secret = client.get_secret(secret_name)
         value = secret.value
 
-        logger.info(f"[AKV] Fetched: {secret_name}")
+        _cache[secret_name] = (value, time.time())
+        logger.info(f"[AKV] Fetched and cached secret: {secret_name}")
         return value
 
     except Exception as e:
